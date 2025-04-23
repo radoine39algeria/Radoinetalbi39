@@ -1,49 +1,93 @@
-// موقع نشر كتب وقصص - Hekayat Books // تم إنشاؤه خصيصًا ليحتوي على: صفحة رئيسية، تسجيل الدخول، إعدادات، وضع مظلم، صفحة عرض كتاب، سياسة خصوصية
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hekayat Books</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: white;
+      color: black;
+      margin: 0;
+      padding: 20px;
+    }
+    .dark {
+      background-color: #121212;
+      color: white;
+    }
+    .book {
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .cover {
+      max-width: 100px;
+    }
+    .btn {
+      padding: 8px 12px;
+      margin: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hekayat Books</h1>
 
-import React, { useState } from 'react'; import { Button } from "@/components/ui/button"; import { Card, CardContent } from "@/components/ui/card"; import { Input } from "@/components/ui/input"; import { Switch } from "@/components/ui/switch"; import { Moon, Sun } from 'lucide-react';
+  <div id="login">
+    <input type="text" id="username" placeholder="أدخل اسم المستخدم" />
+    <button class="btn" onclick="login()">تسجيل الدخول</button>
+  </div>
 
-const books = [ { id: 1, title: "مغامرات فلفول", description: "قصة ممتعة للصغار حول مغامرات فلفول في الغابة.", cover: "https://placehold.co/200x300?text=فلفول" }, { id: 2, title: "الكنز المفقود", description: "رحلة البحث عن الكنز المفقود وسط الجبال والوديان.", cover: "https://placehold.co/200x300?text=الكنز" }, ];
+  <div id="main" style="display: none;">
+    <button class="btn" onclick="toggleDarkMode()">وضع مظلم</button>
+    <h2>مرحبا بك، <span id="user-name"></span></h2>
+    <div id="books"></div>
+  </div>
 
-export default function HekayatApp() { const [darkMode, setDarkMode] = useState(false); const [loggedIn, setLoggedIn] = useState(false); const [username, setUsername] = useState('');
+  <script>
+    const books = [
+      {
+        id: 1,
+        title: "مغامرات فلفول",
+        description: "قصة ممتعة للصغار حول مغامرات فلفول في الغابة.",
+        cover: "https://placehold.co/200x300?text=فلفول"
+      },
+      {
+        id: 2,
+        title: "الكنز المفقود",
+        description: "رحلة البحث عن الكنز المفقود وسط الجبال والوديان.",
+        cover: "https://placehold.co/200x300?text=الكنز"
+      }
+    ];
 
-return ( <div className={darkMode ? "bg-gray-900 text-white min-h-screen" : "bg-white text-black min-h-screen"}> <header className="flex justify-between items-center p-4 border-b"> <h1 className="text-2xl font-bold">Hekayat Books</h1> <div className="flex items-center gap-3"> <Switch checked={darkMode} onCheckedChange={() => setDarkMode(!darkMode)} /> {darkMode ? <Moon /> : <Sun />} </div> </header>
+    function login() {
+      const username = document.getElementById("username").value;
+      if (username.trim() !== "") {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("main").style.display = "block";
+        document.getElementById("user-name").innerText = username;
+        displayBooks();
+      }
+    }
 
-{!loggedIn ? (
-    <main className="p-4 max-w-md mx-auto">
-      <h2 className="text-xl font-semibold mb-2">تسجيل الدخول</h2>
-      <Input placeholder="اسم المستخدم" onChange={(e) => setUsername(e.target.value)} className="mb-2" />
-      <Button onClick={() => setLoggedIn(true)}>دخول</Button>
-    </main>
-  ) : (
-    <main className="p-4">
-      <h2 className="text-xl font-bold mb-4">مرحبًا، {username}</h2>
-      <h3 className="text-lg font-semibold mb-2">الكتب المتوفرة</h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {books.map((book) => (
-          <Card key={book.id}>
-            <CardContent className="p-2">
-              <img src={book.cover} alt={book.title} className="w-full rounded" />
-              <h4 className="text-lg font-bold mt-2">{book.title}</h4>
-              <p className="text-sm text-gray-500 dark:text-gray-300">{book.description}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+    function displayBooks() {
+      const container = document.getElementById("books");
+      books.forEach(book => {
+        container.innerHTML += `
+          <div class="book">
+            <h3>${book.title}</h3>
+            <img class="cover" src="${book.cover}" alt="${book.title}" />
+            <p>${book.description}</p>
+          </div>
+        `;
+      });
+    }
 
-      <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-2">الإعدادات</h3>
-        <p>الوضع الداكن: <Switch checked={darkMode} onCheckedChange={() => setDarkMode(!darkMode)} /></p>
-        <Button variant="destructive" className="mt-4" onClick={() => setLoggedIn(false)}>تسجيل الخروج</Button>
-      </div>
-
-      <footer className="mt-12 text-center text-sm text-gray-400 dark:text-gray-500">
-        <p>سياسة الخصوصية: لا نقوم بجمع أي معلومات شخصية</p>
-        <p>جميع الحقوق محفوظة © Hekayat Books</p>
-      </footer>
-    </main>
-  )}
-</div>
-
-); }
-
-        
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+    }
+  </script>
+</body>
+</html>
