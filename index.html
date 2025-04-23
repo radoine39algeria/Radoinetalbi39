@@ -1,24 +1,49 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>مرحبا بك في موقعي</title>
-  <style>
-    body {
-      background-color: #121212;
-      color: #fff;
-      font-family: sans-serif;
-      text-align: center;
-      padding: 50px;
-    }
-    h1 {
-      color: #00e676;
-    }
-  </style>
-</head>
-<body>
-  <h1>أهلا بك في HOLA!dz</h1>
-  <p>هذا مجرد مثال أولي لموقع يعمل عبر GitHub Pages.</p>
-</body>
-</html>
+// موقع نشر كتب وقصص - Hekayat Books // تم إنشاؤه خصيصًا ليحتوي على: صفحة رئيسية، تسجيل الدخول، إعدادات، وضع مظلم، صفحة عرض كتاب، سياسة خصوصية
+
+import React, { useState } from 'react'; import { Button } from "@/components/ui/button"; import { Card, CardContent } from "@/components/ui/card"; import { Input } from "@/components/ui/input"; import { Switch } from "@/components/ui/switch"; import { Moon, Sun } from 'lucide-react';
+
+const books = [ { id: 1, title: "مغامرات فلفول", description: "قصة ممتعة للصغار حول مغامرات فلفول في الغابة.", cover: "https://placehold.co/200x300?text=فلفول" }, { id: 2, title: "الكنز المفقود", description: "رحلة البحث عن الكنز المفقود وسط الجبال والوديان.", cover: "https://placehold.co/200x300?text=الكنز" }, ];
+
+export default function HekayatApp() { const [darkMode, setDarkMode] = useState(false); const [loggedIn, setLoggedIn] = useState(false); const [username, setUsername] = useState('');
+
+return ( <div className={darkMode ? "bg-gray-900 text-white min-h-screen" : "bg-white text-black min-h-screen"}> <header className="flex justify-between items-center p-4 border-b"> <h1 className="text-2xl font-bold">Hekayat Books</h1> <div className="flex items-center gap-3"> <Switch checked={darkMode} onCheckedChange={() => setDarkMode(!darkMode)} /> {darkMode ? <Moon /> : <Sun />} </div> </header>
+
+{!loggedIn ? (
+    <main className="p-4 max-w-md mx-auto">
+      <h2 className="text-xl font-semibold mb-2">تسجيل الدخول</h2>
+      <Input placeholder="اسم المستخدم" onChange={(e) => setUsername(e.target.value)} className="mb-2" />
+      <Button onClick={() => setLoggedIn(true)}>دخول</Button>
+    </main>
+  ) : (
+    <main className="p-4">
+      <h2 className="text-xl font-bold mb-4">مرحبًا، {username}</h2>
+      <h3 className="text-lg font-semibold mb-2">الكتب المتوفرة</h3>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {books.map((book) => (
+          <Card key={book.id}>
+            <CardContent className="p-2">
+              <img src={book.cover} alt={book.title} className="w-full rounded" />
+              <h4 className="text-lg font-bold mt-2">{book.title}</h4>
+              <p className="text-sm text-gray-500 dark:text-gray-300">{book.description}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="mt-8">
+        <h3 className="text-lg font-semibold mb-2">الإعدادات</h3>
+        <p>الوضع الداكن: <Switch checked={darkMode} onCheckedChange={() => setDarkMode(!darkMode)} /></p>
+        <Button variant="destructive" className="mt-4" onClick={() => setLoggedIn(false)}>تسجيل الخروج</Button>
+      </div>
+
+      <footer className="mt-12 text-center text-sm text-gray-400 dark:text-gray-500">
+        <p>سياسة الخصوصية: لا نقوم بجمع أي معلومات شخصية</p>
+        <p>جميع الحقوق محفوظة © Hekayat Books</p>
+      </footer>
+    </main>
+  )}
+</div>
+
+); }
+
+        
